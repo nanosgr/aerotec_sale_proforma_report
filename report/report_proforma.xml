@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- Template propio: la acción ir.actions.report se actualiza abajo para apuntar aquí -->
+<template id="aerotec_proforma">
+    <t t-call="web.html_container">
+        <t t-set="is_pro_forma" t-value="True"/>
+        <t t-foreach="docs" t-as="doc">
+        <div class="article">
+        <style type="text/css">
+            .pf { font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; color: #1a1a1a; line-height: 1.35; }
+            .pf table { width: 100%; border-collapse: collapse; }
+            /* ---- Header ---- */
+            .pf-hdr td { padding: 4px 6px; vertical-align: middle; }
+            .pf-co-name { font-size: 9.5pt; font-weight: bold; color: #003d79; }
+            .pf-co-addr { font-size: 7.5pt; line-height: 1.5; text-align: right; }
+            /* ---- Banda titulo ---- */
+            .pf-band { background-color: #003d79; color: #ffffff; }
+            .pf-band td { padding: 5px 8px; }
+            .pf-title-text { font-size: 12pt; font-weight: bold; }
+            .pf-title-sub { font-size: 7.5pt; font-weight: normal; display: block; margin-top: 1px; }
+            /* ---- Datos cliente ---- */
+            .pf-cli td { padding: 2px 5px; border-bottom: 1px solid #e0e3e8; font-size: 8pt; }
+            .pf-lbl { font-weight: bold; color: #003d79; white-space: nowrap; width: 80px; }
+            /* ---- Tablas de líneas ---- */
+            .pf-tbl { border: 1px solid #b8c0cc; margin-bottom: 3px; }
+            .pf-th { background-color: #003d79; color: #ffffff; font-weight: bold;
+                     font-size: 7.5pt; padding: 4px 5px; }
+            .pf-th-l { text-align: left; }
+            .pf-th-c { text-align: center; }
+            .pf-th-r { text-align: right; }
+            .pf-sec-hdr { background-color: #dde3ed; font-weight: bold; }
+            .pf-sec-hdr td { padding: 3px 5px; font-size: 8pt; border-bottom: 1px solid #b8c0cc; }
+            .pf-td { padding: 3px 5px; vertical-align: top; border-bottom: 1px solid #eaecef; font-size: 7.5pt; }
+            .pf-td-r { text-align: right; white-space: nowrap; }
+            .pf-td-c { text-align: center; }
+            .pf-td-desc { white-space: pre-line; }
+            .pf-subtot { background-color: #eef1f7; font-weight: bold; }
+            .pf-subtot td { padding: 3px 5px; font-size: 8pt; border-bottom: 1px solid #b8c0cc; }
+            .pf-ivarow td { padding: 2px 5px; font-size: 7.5pt; border-bottom: 1px solid #e0e3e8; }
+            .pf-totrow { background-color: #003d79; color: #ffffff; font-weight: bold; }
+            .pf-totrow td { padding: 4px 5px; font-size: 8.5pt; }
+            /* ---- Totales generales ---- */
+            .pf-gtot td { padding: 3px 8px; font-size: 8.5pt; }
+            .pf-gtot-lbl { text-align: right; font-weight: bold; }
+            .pf-gtot-val { text-align: right; white-space: nowrap; width: 130px; }
+            .pf-gtot-hi { background-color: #003d79; color: #ffffff; font-weight: bold; }
+            /* ---- Notas ---- */
+            .pf-notes { font-size: 7pt; color: #444; line-height: 1.45; margin: 3px 0; }
+            .pf-notes-box { border: 1px solid #b8c0cc; padding: 5px 8px; margin: 4px 0; }
+            /* ---- Datos bancarios ---- */
+            .pf-bank { border: 1px solid #003d79; padding: 5px 8px; margin: 4px 0; font-size: 7.5pt; }
+            .pf-bank-title { font-weight: bold; color: #003d79; margin-right: 10px; }
+            /* ---- Forma de pago ---- */
+            .pf-pay-th { background-color: #003d79; color: #ffffff; font-weight: bold;
+                         font-size: 7.5pt; padding: 3px 5px; }
+            .pf-pay-td { padding: 2px 5px; font-size: 8pt; border-bottom: 1px solid #eaecef; }
+            .pf-pay-tot { background-color: #eef1f7; font-weight: bold; }
+            .pf-pay-tot td { padding: 3px 5px; font-size: 8.5pt; }
+            /* ---- Barra final ---- */
+            .pf-finalbar { background-color: #003d79; color: #ffffff; font-weight: bold; }
+            .pf-finalbar td { padding: 6px 8px; font-size: 9.5pt; }
+        </style>
+
+        <div class="pf">
+
+            <!-- ═══════════════════════════════════════════════════════
+                 ENCABEZADO: logos + datos de la empresa
+            ═══════════════════════════════════════════════════════ -->
+            <table class="pf-hdr" style="border-bottom: 2px solid #003d79; margin-bottom: 4px;">
+                <tr>
+                    <td style="width:25%;">
+                        <img src="/aerotec_sale_proforma_report/static/src/img/aerotec_color.png"
+                             style="height:38px;"/>
+                    </td>
+                    <td style="width:22%; text-align:center;">
+                        <img src="/aerotec_sale_proforma_report/static/src/img/tecnam_logo.svg"
+                             style="height:28px;"/>
+                    </td>
+                    <td style="width:18%; text-align:center;">
+                        <img src="/aerotec_sale_proforma_report/static/src/img/thrush_color.png"
+                             style="height:32px;"/>
+                    </td>
+                    <td style="width:35%;" class="pf-co-addr">
+                        <span class="pf-co-name" t-field="doc.company_id.name"/><br/>
+                        <t t-if="doc.company_id.street">
+                            <span t-field="doc.company_id.street"/><br/>
+                        </t>
+                        <t t-if="doc.company_id.zip or doc.company_id.city">
+                            <t t-if="doc.company_id.zip"><span t-field="doc.company_id.zip"/> - </t>
+                            <t t-if="doc.company_id.city"><span t-field="doc.company_id.city"/></t>
+                            <t t-if="doc.company_id.state_id">, <span t-field="doc.company_id.state_id.name"/></t>
+                            <t t-if="doc.company_id.country_id">, <span t-field="doc.company_id.country_id.name"/></t>
+                            <br/>
+                        </t>
+                        <t t-if="doc.company_id.phone">
+                            Tel. <span t-field="doc.company_id.phone"/>
+                        </t>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 BANDA TÍTULO
+            ═══════════════════════════════════════════════════════ -->
+            <table class="pf-band" style="margin-bottom: 5px;">
+                <tr>
+                    <td style="width:60%;">
+                        <span class="pf-title-text">FACTURA PROFORMA</span>
+                        <span class="pf-title-sub">(Venta en Zona Primaria Aduanera)</span>
+                    </td>
+                    <td style="width:40%; text-align:right; vertical-align:middle;">
+                        <span style="font-size:9.5pt; font-weight:bold;">
+                            #<span t-field="doc.name"/>
+                        </span>
+                        <br/>
+                        <span style="font-size:9pt;">
+                            <t t-if="doc.date_order">
+                                <span t-field="doc.date_order" t-options='{"widget": "date"}'/>
+                            </t>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 DATOS DEL CLIENTE
+            ═══════════════════════════════════════════════════════ -->
+            <table class="pf-cli" style="margin-bottom: 6px;">
+                <tr>
+                    <td class="pf-lbl" style="width:80px;">CLIENTE:</td>
+                    <td colspan="3" style="font-weight:bold; font-size:9pt;">
+                        <span t-field="doc.partner_id.name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pf-lbl">CUIT:</td>
+                    <td style="width:35%;"><span t-field="doc.partner_id.vat"/></td>
+                    <td class="pf-lbl" style="width:80px;">REF. ORDEN</td>
+                    <td><span t-field="doc.client_order_ref"/></td>
+                </tr>
+                <tr>
+                    <td class="pf-lbl">DIRECCIÓN:</td>
+                    <td><span t-field="doc.partner_id.street"/></td>
+                    <td class="pf-lbl">TELÉFONO</td>
+                    <td><span t-field="doc.partner_id.phone"/></td>
+                </tr>
+                <tr>
+                    <td class="pf-lbl">ESTADO:</td>
+                    <td>
+                        <t t-if="doc.partner_id.city"><span t-field="doc.partner_id.city"/></t>
+                        <t t-if="doc.partner_id.state_id">, <span t-field="doc.partner_id.state_id.name"/></t>
+                    </td>
+                    <td class="pf-lbl">CELULAR</td>
+                    <td><span t-field="doc.partner_id.mobile"/></td>
+                </tr>
+                <tr>
+                    <td class="pf-lbl">C.P.:</td>
+                    <td><span t-field="doc.partner_id.zip"/></td>
+                    <td class="pf-lbl">E-MAIL</td>
+                    <td><span t-field="doc.partner_id.email"/></td>
+                </tr>
+                <tr>
+                    <td class="pf-lbl">PAÍS:</td>
+                    <td><span t-field="doc.partner_id.country_id.name"/></td>
+                    <td class="pf-lbl">WEBSITE</td>
+                    <td><span t-field="doc.partner_id.website"/></td>
+                </tr>
+                <tr>
+                    <td class="pf-lbl">ATT:</td>
+                    <td colspan="3">
+                        <t t-if="doc.partner_id.child_ids">
+                            <span t-field="doc.partner_id.child_ids[0].name"/>
+                        </t>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TABLAS DE LÍNEAS (una por sección)
+            ═══════════════════════════════════════════════════════ -->
+            <t t-set="sections" t-value="doc._get_proforma_sections()"/>
+            <t t-foreach="sections" t-as="section">
+
+                <table class="pf-tbl">
+                    <thead>
+                        <tr>
+                            <th class="pf-th pf-th-l" style="width:8%;">CÓDIGO</th>
+                            <th class="pf-th pf-th-c" style="width:7%;">CANTIDAD</th>
+                            <th class="pf-th pf-th-l" style="width:55%;">
+                                <t t-if="section_index == 0">DESCRIPCIÓN AVIÓN</t>
+                                <t t-else="">DESCRIPCIÓN OPCIONALES</t>
+                            </th>
+                            <th class="pf-th pf-th-r" style="width:15%;">PRECIO UNITARIO</th>
+                            <th class="pf-th pf-th-r" style="width:15%;">SUBTOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Sub-encabezado de sección (nombre de la sección como fila destacada) -->
+                        <t t-if="section['name']">
+                            <tr class="pf-sec-hdr">
+                                <td colspan="5"><span t-out="section['name']"/></td>
+                            </tr>
+                        </t>
+
+                        <t t-foreach="section['lines']" t-as="line">
+                            <!-- Línea de nota -->
+                            <t t-if="line.display_type == 'line_note'">
+                                <tr>
+                                    <td colspan="5" class="pf-td"
+                                        style="font-style:italic; font-size:7pt; color:#555;">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <!-- Línea de producto -->
+                            <t t-else="">
+                                <tr>
+                                    <td class="pf-td" style="font-size:7.5pt;">
+                                        <t t-if="line.product_id.default_code">
+                                            <span t-field="line.product_id.default_code"/>
+                                        </t>
+                                    </td>
+                                    <td class="pf-td pf-td-c">
+                                        <span t-field="line.product_uom_qty"
+                                              t-options='{"widget": "float", "decimal_precision": "Product Unit of Measure"}'/>
+                                    </td>
+                                    <td class="pf-td pf-td-desc">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <td class="pf-td pf-td-r">
+                                        <t t-if="line.price_unit">
+                                            <span t-out="format_amount(line.price_unit, doc.currency_id)"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="doc.currency_id.symbol"/> -
+                                        </t>
+                                    </td>
+                                    <td class="pf-td pf-td-r">
+                                        <t t-if="line.price_subtotal">
+                                            <span t-out="format_amount(line.price_subtotal, doc.currency_id)"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="doc.currency_id.symbol"/> -
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+
+                    <!-- Pie de sección: subtotal + impuestos + total -->
+                    <tfoot>
+                        <tr class="pf-subtot">
+                            <td colspan="4" style="text-align:right;">
+                                <t t-if="section_index == 0">
+                                    SUBTOTAL AVIÓN - Configuración de Importación - (CIF Buenos Aires):
+                                </t>
+                                <t t-else="">
+                                    SUBTOTAL OPCIONALES NACIONALES
+                                </t>
+                            </td>
+                            <td style="text-align:right; white-space:nowrap;">
+                                <span t-out="format_amount(section['subtotal'], doc.currency_id)"/>
+                            </td>
+                        </tr>
+                        <t t-foreach="section['taxes']" t-as="tax">
+                            <tr class="pf-ivarow">
+                                <td colspan="3" style="text-align:right;">
+                                    <t t-if="section_index == 0">
+                                        IVA : <span t-out="tax['rate']"/>%
+                                        <span style="font-size:7pt; color:#555;">
+                                            (Bienes de Capital - Pagadero en ARS, al momento de Nacionalización, vía VEP)
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        IVA (Alícuota General) <span t-out="tax['rate']"/>%
+                                    </t>
+                                </td>
+                                <td style="text-align:right; padding:2px 5px;">
+                                    <span t-field="doc.currency_id.symbol"/>
+                                </td>
+                                <td style="text-align:right; white-space:nowrap; padding:2px 5px;">
+                                    <span t-out="format_amount(tax['amount'], doc.currency_id)"/>
+                                </td>
+                            </tr>
+                        </t>
+                        <tr class="pf-totrow">
+                            <td colspan="4" style="text-align:right;">
+                                <t t-if="section_index == 0">TOTAL AVIÓN</t>
+                                <t t-else="">TOTAL OPCIONALES</t>
+                            </td>
+                            <td style="text-align:right; white-space:nowrap;">
+                                <span t-out="format_amount(section['total'], doc.currency_id)"/>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+            </t><!-- fin t-foreach sections -->
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TOTALES GENERALES
+            ═══════════════════════════════════════════════════════ -->
+            <table class="pf-gtot" style="margin-top:4px;">
+                <tr>
+                    <td style="width:55%;"/>
+                    <td class="pf-gtot-lbl">
+                        TOTAL Aeronave y Opcionales (Sin Impuestos)
+                    </td>
+                    <td class="pf-gtot-val">
+                        <span t-out="format_amount(doc.amount_untaxed, doc.currency_id)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td class="pf-gtot-lbl">IVA Total</td>
+                    <td class="pf-gtot-val">
+                        <span t-out="format_amount(doc.amount_tax, doc.currency_id)"/>
+                    </td>
+                </tr>
+                <tr class="pf-gtot-hi">
+                    <td/>
+                    <td style="padding:4px 8px; text-align:right; font-size:9pt;">
+                        VALOR EN EUROS OFICIALES (*), TOTAL CON IMPUESTOS
+                    </td>
+                    <td style="text-align:right; white-space:nowrap; padding:4px 8px; font-size:10pt;">
+                        <span t-out="format_amount(doc.amount_total, doc.currency_id)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="pf-notes"
+                        style="text-align:right; padding-top:3px;">
+                        (*) Los pagos en pesos (ARS), serán tomados al tipo de cambio de cierre
+                        del día de la acreditación de los fondos, Euro venta, billete,
+                        Banco Nación Argentina. (www.bna.com.ar).
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 NOTA DE LA ORDEN (campo "Nota" del pedido de venta)
+            ═══════════════════════════════════════════════════════ -->
+            <t t-if="doc.note">
+                <div class="pf-notes" style="margin-top:4px;">
+                    <span t-field="doc.note"/>
+                </div>
+            </t>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 CONDICIONES ESTÁNDAR
+            ═══════════════════════════════════════════════════════ -->
+            <div class="pf-notes" style="margin-top:5px; border-top:1px solid #c8cdd2; padding-top:4px;">
+                <p>* Aeronave cotizada RTF (Ready to Fly) Aeródromo Mario Cardama, Aerotec, Rivadavia, Mendoza. Flete, ensamble local, y matriculación incluidas. Eventuales trabajos extra, no incluidos. (CIF Buenos Aires, a los fines aduaneros).</p>
+                <p>* Entrega: 150-180 días desde la recepción del depósito inicial, si no hay demoras en los pagos parciales ni causas de fuerza mayor.</p>
+            </div>
+
+            <div class="pf-notes pf-notes-box">
+                <p><strong>(**) Precios de Venta en Zona Primaria Aduanera</strong></p>
+                <p>- Importación a nombre y cargo de Aerotec hasta Zona Primaria de Aduana de Buenos Aires. Nacionalización legal a cargo del cliente final (impuestos y agregados adicionales al nacionalizar el bien en el país: IVA Adicional, IIBB, Ganancias y/o cualquier otro impuesto de corresponder). Nacionalización operativa, trámites y costos aduaneros, a cargo de Aerotec.</p>
+                <p>- Servicios Incluidos: Todos, desde Fábrica hasta su entrega final en Aerotec. Importación, armado y matriculación nacional, puesta en vuelo, gestión ante todos los Organismos Oficiales (Aduana, ANAC, etc.).</p>
+                <p>- Impuestos de Importación: Especificados en la presente proforma a fin informativo. Pagaderos directamente por el cliente, al tipo de cambio vigente al momento de nacionalización, vía VEP a ARCA.</p>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 DATOS BANCARIOS
+            ═══════════════════════════════════════════════════════ -->
+            <div class="pf-bank">
+                <span class="pf-bank-title">DATOS BANCARIOS</span>
+                <t t-if="doc.company_id.partner_id.bank_ids">
+                    <t t-foreach="doc.company_id.partner_id.bank_ids" t-as="bank">
+                        <span>
+                            <t t-if="bank.bank_id">
+                                <span t-field="bank.bank_id.name"/>
+                            </t>
+                            CUIT <span t-field="doc.company_id.vat"/> -
+                            <span t-field="doc.company_id.name"/>
+                            CBU <span t-field="bank.acc_number"/>
+                        </span>
+                    </t>
+                </t>
+            </div>
+
+            <div class="pf-notes" style="margin: 3px 0;">
+                * IVA alícuota general 10,5% sobre valor de factura del avión, 21% sobre los equipamientos adicionales.
+                Exceptuando aquellos casos con certificado de exención específico.
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 VALOR TOTAL (EXW) - antes de forma de pago
+            ═══════════════════════════════════════════════════════ -->
+            <table class="pf-finalbar" style="margin: 5px 0 3px 0;">
+                <tr>
+                    <td style="font-size:9pt;">
+                        VALOR TOTAL - (EXW - FAF AEROTEC, RIVADAVIA, MENDOZA)
+                    </td>
+                    <td style="text-align:right; white-space:nowrap; font-size:10pt; width:160px;">
+                        <span t-out="format_amount(doc.amount_total, doc.currency_id)"/>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 FORMA DE PAGO
+            ═══════════════════════════════════════════════════════ -->
+            <table style="margin-top:4px;">
+                <thead>
+                    <tr>
+                        <th class="pf-pay-th" style="width:13%; text-align:left;">FECHA</th>
+                        <th class="pf-pay-th" style="width:52%; text-align:left;">FORMA DE PAGO</th>
+                        <th class="pf-pay-th" style="width:10%; text-align:center;">%</th>
+                        <th class="pf-pay-th" style="width:25%; text-align:right;">EUROS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="plines" t-value="doc._get_proforma_payment_lines()"/>
+                    <t t-foreach="plines" t-as="pl">
+                        <tr>
+                            <td class="pf-pay-td">
+                                <t t-if="pl['date']">
+                                    <span t-out="pl['date'].strftime('%d/%m/%Y')"/>
+                                </t>
+                            </td>
+                            <td class="pf-pay-td">
+                                <span t-out="doc.payment_term_id.name or ''"/>
+                            </td>
+                            <td class="pf-pay-td" style="text-align:center;">
+                                <span t-out="'{:.0f}%'.format(pl['percent'])"/>
+                            </td>
+                            <td class="pf-pay-td" style="text-align:right;">
+                                <span t-out="format_amount(pl['amount'], doc.currency_id)"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <!-- Fila de impuestos de importación -->
+                    <t t-if="doc.amount_tax">
+                        <tr>
+                            <td class="pf-pay-td"/>
+                            <td class="pf-pay-td">
+                                Impuestos de Importación (Directo a ARCA)
+                            </td>
+                            <td class="pf-pay-td" style="text-align:center;">-</td>
+                            <td class="pf-pay-td" style="text-align:right;">
+                                <span t-out="format_amount(doc.amount_tax, doc.currency_id)"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr class="pf-pay-tot">
+                        <td colspan="2" style="text-align:right; padding:3px 5px;">TOTAL</td>
+                        <td style="text-align:center; padding:3px 5px;"/>
+                        <td style="text-align:right; padding:3px 5px;">
+                            <span t-out="format_amount(doc.amount_total, doc.currency_id)"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div><!-- fin .pf -->
+        </div><!-- fin .article -->
+        </t><!-- fin t-foreach docs -->
+    </t>
+</template>
+
+
+<!-- Apuntar la acción existente a nuestro template.
+     El report_name debe coincidir exactamente con la key del template:
+     módulo.xml_id → aerotec_sale_proforma_report.aerotec_proforma -->
+<record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
+    <field name="report_name">aerotec_sale_proforma_report.aerotec_proforma</field>
+    <field name="report_file">aerotec_sale_proforma_report.aerotec_proforma</field>
+</record>
+
+</odoo>
