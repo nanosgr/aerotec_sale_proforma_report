@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_aerotec_proforma" model="ir.sequence">
+        <field name="name">Pro-Forma Aerotec</field>
+        <field name="code">aerotec.proforma</field>
+        <field name="prefix">%(year)s-AC-</field>
+        <field name="suffix">P</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

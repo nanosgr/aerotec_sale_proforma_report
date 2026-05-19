@@ -11,7 +11,7 @@
             .pf { font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; color: #1a1a1a; line-height: 1.35; }
             .pf table { width: 100%; border-collapse: collapse; }
             /* ---- Header ---- */
-            .pf-hdr td { padding: 4px 6px; vertical-align: middle; }
+            .pf-hdr td { padding: 6px 8px; vertical-align: middle; background-color: #003d79; }
             .pf-co-name { font-size: 9.5pt; font-weight: bold; color: #003d79; }
             .pf-co-addr { font-size: 7.5pt; line-height: 1.5; text-align: right; }
             /* ---- Banda titulo ---- */
@@ -46,7 +46,7 @@
             .pf-gtot-val { text-align: right; white-space: nowrap; width: 130px; }
             .pf-gtot-hi { background-color: #003d79; color: #ffffff; font-weight: bold; }
             /* ---- Notas ---- */
-            .pf-notes { font-size: 7pt; color: #444; line-height: 1.45; margin: 3px 0; }
+            .pf-notes { font-size: 7pt; color: #555; line-height: 1; margin: 3px 0; }
             .pf-notes-box { border: 1px solid #b8c0cc; padding: 5px 8px; margin: 4px 0; }
             /* ---- Datos bancarios ---- */
             .pf-bank { border: 1px solid #003d79; padding: 5px 8px; margin: 4px 0; font-size: 7.5pt; }
@@ -73,28 +73,28 @@
                         <img src="/aerotec_sale_proforma_report/static/src/img/aerotec_color.png"
                              style="height:38px;"/>
                     </td>
-                    <td style="width:22%; text-align:center;">
-                        <img src="/aerotec_sale_proforma_report/static/src/img/tecnam_logo.svg"
+                    <td style="width:25%; text-align:center;">
+                        <img src="/aerotec_sale_proforma_report/static/src/img/tecnam_logo.png"
                              style="height:28px;"/>
                     </td>
-                    <td style="width:18%; text-align:center;">
+                    <td style="width:25%; text-align:center;">
                         <img src="/aerotec_sale_proforma_report/static/src/img/thrush_color.png"
                              style="height:32px;"/>
                     </td>
-                    <td style="width:35%;" class="pf-co-addr">
-                        <span class="pf-co-name" t-field="doc.company_id.name"/><br/>
+                    <td style="width:25%; " class="pf-co-addr">
+                        <span class="pf-title-text" style="color: #fff;" t-field="doc.company_id.name"/><br/>
                         <t t-if="doc.company_id.street">
-                            <span t-field="doc.company_id.street"/><br/>
+                            <span style="color: #fff;" t-field="doc.company_id.street"/><br/>
                         </t>
                         <t t-if="doc.company_id.zip or doc.company_id.city">
-                            <t t-if="doc.company_id.zip"><span t-field="doc.company_id.zip"/> - </t>
-                            <t t-if="doc.company_id.city"><span t-field="doc.company_id.city"/></t>
-                            <t t-if="doc.company_id.state_id">, <span t-field="doc.company_id.state_id.name"/></t>
-                            <t t-if="doc.company_id.country_id">, <span t-field="doc.company_id.country_id.name"/></t>
+                            <t t-if="doc.company_id.zip"><span style="color: #fff;" t-field="doc.company_id.zip"/> - </t>
+                            <t t-if="doc.company_id.city"><span style="color: #fff;" t-field="doc.company_id.city"/></t>
+                            <t t-if="doc.company_id.state_id">, <span style="color: #fff;" t-field="doc.company_id.state_id.name"/></t>
+                            <t t-if="doc.company_id.country_id">, <span style="color: #fff;" t-field="doc.company_id.country_id.name"/></t>
                             <br/>
                         </t>
                         <t t-if="doc.company_id.phone">
-                            Tel. <span t-field="doc.company_id.phone"/>
+                            <span style="color: #fff;">Teléfono: </span><span style="color: #fff;" t-field="doc.company_id.phone"/>
                         </t>
                     </td>
                 </tr>
@@ -105,15 +105,24 @@
             ═══════════════════════════════════════════════════════ -->
             <table class="pf-band" style="margin-bottom: 5px;">
                 <tr>
-                    <td style="width:60%;">
+                    <td style="width:34%;">
                         <span class="pf-title-text">FACTURA PROFORMA</span>
-                        <span class="pf-title-sub">(Venta en Zona Primaria Aduanera)</span>
-                    </td>
-                    <td style="width:40%; text-align:right; vertical-align:middle;">
-                        <span style="font-size:9.5pt; font-weight:bold;">
-                            #<span t-field="doc.name"/>
+                        <span class="pf-title-sub">
+                            <t t-if="doc.proforma_type == 'national'">(Venta Nacional)</t>
+                            <t t-elif="doc.proforma_type == 'customs_zone'">(Venta en Zona Primaria Aduanera)</t>
                         </span>
-                        <br/>
+                    </td>
+                    <td style="width:33%; text-align:right; vertical-align:middle;">
+                        <span style="font-size:9.5pt; font-weight:bold;">
+                            #<t t-if="doc.proforma_name">
+                                <span t-out="doc.proforma_name"/>
+                            </t>
+                            <t t-else="">
+                                <span t-field="doc.name"/>
+                            </t>
+                        </span>
+                    </td>
+                    <td style="width:33%; text-align:right; vertical-align:middle;">
                         <span style="font-size:9pt;">
                             <t t-if="doc.date_order">
                                 <span t-field="doc.date_order" t-options='{"widget": "date"}'/>
@@ -177,34 +186,28 @@
             </table>
 
             <!-- ═══════════════════════════════════════════════════════
-                 TABLAS DE LÍNEAS (una por sección)
+                 TABLA AVIÓN (primera sección)
             ═══════════════════════════════════════════════════════ -->
             <t t-set="sections" t-value="doc._get_proforma_sections()"/>
-            <t t-foreach="sections" t-as="section">
-
+            <t t-if="sections">
+                <t t-set="avion" t-value="sections[0]"/>
                 <table class="pf-tbl">
                     <thead>
                         <tr>
                             <th class="pf-th pf-th-l" style="width:8%;">CÓDIGO</th>
                             <th class="pf-th pf-th-c" style="width:7%;">CANTIDAD</th>
-                            <th class="pf-th pf-th-l" style="width:55%;">
-                                <t t-if="section_index == 0">DESCRIPCIÓN AVIÓN</t>
-                                <t t-else="">DESCRIPCIÓN OPCIONALES</t>
-                            </th>
+                            <th class="pf-th pf-th-l" style="width:55%;">DESCRIPCIÓN AVIÓN</th>
                             <th class="pf-th pf-th-r" style="width:15%;">PRECIO UNITARIO</th>
                             <th class="pf-th pf-th-r" style="width:15%;">SUBTOTAL</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Sub-encabezado de sección (nombre de la sección como fila destacada) -->
-                        <t t-if="section['name']">
+                        <t t-if="avion['name']">
                             <tr class="pf-sec-hdr">
-                                <td colspan="5"><span t-out="section['name']"/></td>
+                                <td colspan="5"><span t-out="avion['name']"/></td>
                             </tr>
                         </t>
-
-                        <t t-foreach="section['lines']" t-as="line">
-                            <!-- Línea de nota -->
+                        <t t-foreach="avion['lines']" t-as="line">
                             <t t-if="line.display_type == 'line_note'">
                                 <tr>
                                     <td colspan="5" class="pf-td"
@@ -213,7 +216,6 @@
                                     </td>
                                 </tr>
                             </t>
-                            <!-- Línea de producto -->
                             <t t-else="">
                                 <tr>
                                     <td class="pf-td" style="font-size:7.5pt;">
@@ -248,34 +250,22 @@
                             </t>
                         </t>
                     </tbody>
-
-                    <!-- Pie de sección: subtotal + impuestos + total -->
                     <tfoot>
                         <tr class="pf-subtot">
                             <td colspan="4" style="text-align:right;">
-                                <t t-if="section_index == 0">
-                                    SUBTOTAL AVIÓN - Configuración de Importación - (CIF Buenos Aires):
-                                </t>
-                                <t t-else="">
-                                    SUBTOTAL OPCIONALES NACIONALES
-                                </t>
+                                SUBTOTAL AVIÓN - Configuración de Importación - (CIF Buenos Aires):
                             </td>
                             <td style="text-align:right; white-space:nowrap;">
-                                <span t-out="format_amount(section['subtotal'], doc.currency_id)"/>
+                                <span t-out="format_amount(avion['subtotal'], doc.currency_id)"/>
                             </td>
                         </tr>
-                        <t t-foreach="section['taxes']" t-as="tax">
+                        <t t-foreach="avion['taxes']" t-as="tax">
                             <tr class="pf-ivarow">
                                 <td colspan="3" style="text-align:right;">
-                                    <t t-if="section_index == 0">
-                                        IVA : <span t-out="tax['rate']"/>%
-                                        <span style="font-size:7pt; color:#555;">
-                                            (Bienes de Capital - Pagadero en ARS, al momento de Nacionalización, vía VEP)
-                                        </span>
-                                    </t>
-                                    <t t-else="">
-                                        IVA (Alícuota General) <span t-out="tax['rate']"/>%
-                                    </t>
+                                    IVA : <span t-out="tax['rate']"/>%
+                                    <span style="font-size:7pt; color:#555;">
+                                        (Bienes de Capital - Pagadero en ARS, al momento de Nacionalización, vía VEP)
+                                    </span>
                                 </td>
                                 <td style="text-align:right; padding:2px 5px;">
                                     <span t-field="doc.currency_id.symbol"/>
@@ -286,25 +276,117 @@
                             </tr>
                         </t>
                         <tr class="pf-totrow">
-                            <td colspan="4" style="text-align:right;">
-                                <t t-if="section_index == 0">TOTAL AVIÓN</t>
-                                <t t-else="">TOTAL OPCIONALES</t>
-                            </td>
+                            <td colspan="4" style="text-align:right;">TOTAL AVIÓN</td>
                             <td style="text-align:right; white-space:nowrap;">
-                                <span t-out="format_amount(section['total'], doc.currency_id)"/>
+                                <span t-out="format_amount(avion['total'], doc.currency_id)"/>
                             </td>
                         </tr>
                     </tfoot>
                 </table>
+            </t>
 
-            </t><!-- fin t-foreach sections -->
+            <!-- ═══════════════════════════════════════════════════════
+                 TABLA OPCIONALES (todas las secciones siguientes unificadas)
+            ═══════════════════════════════════════════════════════ -->
+            <t t-set="opcionales" t-value="doc._get_proforma_opcionales_aggregate()"/>
+            <t t-if="opcionales">
+                <table class="pf-tbl" style="margin-top:6px;">
+                    <thead>
+                        <tr>
+                            <th class="pf-th pf-th-l" style="width:8%;">CÓDIGO</th>
+                            <th class="pf-th pf-th-c" style="width:7%;">CANTIDAD</th>
+                            <th class="pf-th pf-th-l" style="width:55%;">DESCRIPCIÓN OPCIONALES</th>
+                            <th class="pf-th pf-th-r" style="width:15%;">PRECIO UNITARIO</th>
+                            <th class="pf-th pf-th-r" style="width:15%;">SUBTOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="opcionales['sections']" t-as="sec">
+                            <t t-if="sec['name']">
+                                <tr class="pf-sec-hdr">
+                                    <td colspan="5"><span t-out="sec['name']"/></td>
+                                </tr>
+                            </t>
+                            <t t-foreach="sec['lines']" t-as="line">
+                                <t t-if="line.display_type == 'line_note'">
+                                    <tr>
+                                        <td colspan="5" class="pf-td"
+                                            style="font-style:italic; font-size:7pt; color:#555;">
+                                            <span t-field="line.name"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td class="pf-td" style="font-size:7.5pt;">
+                                            <t t-if="line.product_id.default_code">
+                                                <span t-field="line.product_id.default_code"/>
+                                            </t>
+                                        </td>
+                                        <td class="pf-td pf-td-c">
+                                            <span t-field="line.product_uom_qty"
+                                                  t-options='{"widget": "float", "decimal_precision": "Product Unit of Measure"}'/>
+                                        </td>
+                                        <td class="pf-td pf-td-desc">
+                                            <span t-field="line.name"/>
+                                        </td>
+                                        <td class="pf-td pf-td-r">
+                                            <t t-if="line.price_unit">
+                                                <span t-out="format_amount(line.price_unit, doc.currency_id)"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-field="doc.currency_id.symbol"/> -
+                                            </t>
+                                        </td>
+                                        <td class="pf-td pf-td-r">
+                                            <t t-if="line.price_subtotal">
+                                                <span t-out="format_amount(line.price_subtotal, doc.currency_id)"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-field="doc.currency_id.symbol"/> -
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </t>
+                    </tbody>
+                    <tfoot>
+                        <tr class="pf-subtot">
+                            <td colspan="4" style="text-align:right;">SUBTOTAL OPCIONALES NACIONALES</td>
+                            <td style="text-align:right; white-space:nowrap;">
+                                <span t-out="format_amount(opcionales['subtotal'], doc.currency_id)"/>
+                            </td>
+                        </tr>
+                        <t t-foreach="opcionales['taxes']" t-as="tax">
+                            <tr class="pf-ivarow">
+                                <td colspan="3" style="text-align:right;">
+                                    IVA (Alícuota General) <span t-out="tax['rate']"/>%
+                                </td>
+                                <td style="text-align:right; padding:2px 5px;">
+                                    <span t-field="doc.currency_id.symbol"/>
+                                </td>
+                                <td style="text-align:right; white-space:nowrap; padding:2px 5px;">
+                                    <span t-out="format_amount(tax['amount'], doc.currency_id)"/>
+                                </td>
+                            </tr>
+                        </t>
+                        <tr class="pf-totrow">
+                            <td colspan="4" style="text-align:right;">TOTAL OPCIONALES</td>
+                            <td style="text-align:right; white-space:nowrap;">
+                                <span t-out="format_amount(opcionales['total'], doc.currency_id)"/>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </t>
 
             <!-- ═══════════════════════════════════════════════════════
                  TOTALES GENERALES
             ═══════════════════════════════════════════════════════ -->
             <table class="pf-gtot" style="margin-top:4px;">
                 <tr>
-                    <td style="width:55%;"/>
+                    <td style="width:10%;"/>
                     <td class="pf-gtot-lbl">
                         TOTAL Aeronave y Opcionales (Sin Impuestos)
                     </td>
@@ -320,7 +402,7 @@
                     </td>
                 </tr>
                 <tr class="pf-gtot-hi">
-                    <td/>
+                    <td style="width:10%;"/>
                     <td style="padding:4px 8px; text-align:right; font-size:9pt;">
                         VALOR EN EUROS OFICIALES (*), TOTAL CON IMPUESTOS
                     </td>
@@ -330,7 +412,7 @@
                 </tr>
                 <tr>
                     <td colspan="3" class="pf-notes"
-                        style="text-align:right; padding-top:3px;">
+                        style="text-align:center; font-style:italic;">
                         (*) Los pagos en pesos (ARS), serán tomados al tipo de cambio de cierre
                         del día de la acreditación de los fondos, Euro venta, billete,
                         Banco Nación Argentina. (www.bna.com.ar).
@@ -468,6 +550,21 @@
 <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
     <field name="report_name">aerotec_sale_proforma_report.aerotec_proforma</field>
     <field name="report_file">aerotec_sale_proforma_report.aerotec_proforma</field>
+</record>
+
+<!-- Formato de página personalizado -->
+<record id="paperformat_proforma" model="report.paperformat">
+    <field name="name">Pro-Forma Aerotec</field>
+    <field name="default" eval="False"/>
+    <field name="format">A4</field>
+    <field name="margin_top">5</field>
+    <field name="margin_bottom">10</field>
+    <field name="margin_left">5</field>
+    <field name="margin_right">5</field>
+    <field name="orientation">Portrait</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">3</field>
+    <field name="dpi">90</field>
 </record>
 
 </odoo>

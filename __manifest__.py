@@ -7,6 +7,8 @@
     "license": "LGPL-3",
     "depends": ["sale"],
     "data": [
+        "data/data.xml",
+        "views/sale_order_views.xml",
         "report/report_proforma.xml",
     ],
     "installable": True,

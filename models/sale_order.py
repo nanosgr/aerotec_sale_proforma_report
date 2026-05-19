@@ -1,9 +1,41 @@
 from dateutil.relativedelta import relativedelta
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
+
+    proforma_type = fields.Selection(
+        [
+            ("sale", "Venta"),
+            ("national", "Venta Nacional"),
+            ("customs_zone", "Venta en Zona Franca"),
+        ],
+        string="Tipo de Venta",
+        default="sale",
+        required=True,
+    )
+    proforma_name = fields.Char(string="N° Pro-Forma", copy=False, readonly=True)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            if record.proforma_type in ("national", "customs_zone"):
+                record.proforma_name = self.env["ir.sequence"].next_by_code(
+                    "aerotec.proforma"
+                )
+        return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        if vals.get("proforma_type") in ("national", "customs_zone"):
+            for record in self:
+                if not record.proforma_name:
+                    record.proforma_name = self.env["ir.sequence"].next_by_code(
+                        "aerotec.proforma"
+                    )
+        return res
 
     def _get_proforma_sections(self):
         """Agrupa las líneas de la orden por sección para el reporte pro-forma.
@@ -43,6 +75,36 @@ class SaleOrder(models.Model):
         if current["lines"]:
             sections.append(self._finalize_proforma_section(current))
         return sections
+
+    def _get_proforma_opcionales_aggregate(self):
+        """Combina todas las secciones opcionales (índice 1 en adelante) en una
+        única estructura con subtotales e impuestos agregados."""
+        all_sections = self._get_proforma_sections()
+        if len(all_sections) <= 1:
+            return None
+        opcionales = all_sections[1:]
+        agg_subtotal = sum(s["subtotal"] for s in opcionales)
+        agg_taxes = {}
+        for s in opcionales:
+            for tax in s["taxes"]:
+                k = tax["rate"]
+                if k not in agg_taxes:
+                    agg_taxes[k] = {
+                        "label": tax["label"],
+                        "rate": tax["rate"],
+                        "base": 0.0,
+                        "amount": 0.0,
+                    }
+                agg_taxes[k]["base"] += tax["base"]
+                agg_taxes[k]["amount"] += tax["amount"]
+        agg_tax_list = sorted(agg_taxes.values(), key=lambda x: x["rate"])
+        agg_total = agg_subtotal + sum(t["amount"] for t in agg_tax_list)
+        return {
+            "sections": opcionales,
+            "subtotal": agg_subtotal,
+            "taxes": agg_tax_list,
+            "total": agg_total,
+        }
 
     def _finalize_proforma_section(self, section):
         tax_list = sorted(section["taxes"].values(), key=lambda x: x["rate"])
