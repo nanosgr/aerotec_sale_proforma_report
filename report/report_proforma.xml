@@ -550,6 +550,7 @@
 <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
     <field name="report_name">aerotec_sale_proforma_report.aerotec_proforma</field>
     <field name="report_file">aerotec_sale_proforma_report.aerotec_proforma</field>
+    <field name="paperformat_id" ref="paperformat_proforma"/>
 </record>
 
 <!-- Formato de página personalizado -->
