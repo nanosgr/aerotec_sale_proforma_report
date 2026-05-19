@@ -129,7 +129,7 @@ class SaleOrder(models.Model):
         lines = []
         cumulative_pct = 0.0
 
-        for pt_line in self.payment_term_id.line_ids.sorted("sequence"):
+        for pt_line in self.payment_term_id.line_ids.sorted("nb_days"):
             if pt_line.value == "percent":
                 pct = pt_line.value_amount
                 amount = total * pct / 100.0
