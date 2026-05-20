@@ -9,7 +9,7 @@ class SaleOrder(models.Model):
         [
             ("sale", "Venta"),
             ("national", "Venta Nacional"),
-            ("customs_zone", "Venta en Zona Franca"),
+            ("customs_zone", "Venta en Zona Primaria"),
         ],
         string="Tipo de Venta",
         default="sale",
