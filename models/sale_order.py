@@ -15,7 +15,7 @@ class SaleOrder(models.Model):
         default="sale",
         required=True,
     )
-    proforma_name = fields.Char(string="N° Pro-Forma", copy=False, readonly=True)
+    proforma_name = fields.Char(string="N° Proforma", copy=False, readonly=True)
 
     @api.model_create_multi
     def create(self, vals_list):
