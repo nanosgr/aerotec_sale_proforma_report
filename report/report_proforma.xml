@@ -229,9 +229,6 @@
                                     </td>
                                     <td class="pf-td pf-td-desc">
                                         <span t-field="line.name"/>
-                                        <t t-if="line.product_id.configuration">
-                                            <div t-field="line.product_id.configuration" style="font-size:7pt;"/>
-                                        </t>
                                     </td>
                                     <td class="pf-td pf-td-r">
                                         <t t-if="line.price_unit">
@@ -250,6 +247,13 @@
                                         </t>
                                     </td>
                                 </tr>
+                                <t t-if="line.product_id.configuration">
+                                    <tr>
+                                        <td colspan="5" class="pf-td" style="font-size:7pt;">
+                                            <div t-field="line.product_id.configuration"/>
+                                        </td>
+                                    </tr>
+                                </t>
                             </t>
                         </t>
                     </tbody>
@@ -332,9 +336,6 @@
                                         </td>
                                         <td class="pf-td pf-td-desc">
                                             <span t-field="line.name"/>
-                                            <t t-if="line.product_id.configuration">
-                                                <div t-field="line.product_id.configuration" style="font-size:7pt;"/>
-                                            </t>
                                         </td>
                                         <td class="pf-td pf-td-r">
                                             <t t-if="line.price_unit">
@@ -353,6 +354,13 @@
                                             </t>
                                         </td>
                                     </tr>
+                                    <t t-if="line.product_id.configuration">
+                                        <tr>
+                                            <td colspan="5" class="pf-td" style="font-size:7pt;">
+                                                <div t-field="line.product_id.configuration"/>
+                                            </td>
+                                        </tr>
+                                    </t>
                                 </t>
                             </t>
                         </t>
