@@ -467,19 +467,26 @@
             <!-- ═══════════════════════════════════════════════════════
                  CONDICIONES ESTÁNDAR
             ═══════════════════════════════════════════════════════ -->
-            <div class="pf-notes" style="margin-top:5px; border-top:1px solid #c8cdd2; padding-top:4px;">
-                <p>* Aeronave cotizada RTF (Ready to Fly) Aeródromo Mario Cardama, Aerotec, Rivadavia, Mendoza. Flete, ensamble local, y matriculación incluidas. Eventuales trabajos extra, no incluidos. (CIF Buenos Aires, a los fines aduaneros).</p>
-                <p>* Entrega: 150-180 días desde la recepción del depósito inicial, si no hay demoras en los pagos parciales ni causas de fuerza mayor.</p>
-            </div>
 
             <t t-if="doc.proforma_type == 'national'">
                 <div class="pf-notes pf-notes-box">
-                    <p><strong>VENTA NACIONAL</strong></p>
+                    <p>* Condicion de Venta: EXW (RTF- Ready to Fly) Aeródromo Aerotec Rivadavia, Mendoza. Flete, ensamble local, y matriculación incluidas. Eventuales trabajos extra, no incluidos.</p>
+                    <p>* Entrega: 120-150  (ESTA INFORMACION QUE SE PUEDDA EDITAR) días desde la recepción del depósito inicial, si no hay demoras en los pagos parciales ni causas de fuerza mayor.</p>
+                    <p>(**) Precios de Venta Nacional -Importación a nombre y cargo de Aerotec. Venta Nacional.</p>
+                    <p>- Servicios Incluidos: Todo hasta su entrega. Importación, armado y fabricación nacional; matriculación, puesta en vuelo, gestión de transferencia de dominio.</p>
+                    <p>- Costos NO Incluidos: Arancel de transferencia de dominio, 1% sobre el valor neto de factura. Impuestos de Sellos, 1,5% (ATM Mendoza), ambos sobre el valor neto de la factura.</p>
+                    <p>* Iva alícuota general 10,5% sobre valor de factura del avion, 21% sobre los equipamientos adicionales. Exceptuando aquellos casos con certificado de exención especifico.</p>
                 </div>
             </t>
             <t t-elif="doc.proforma_type == 'customs_zone'">
                 <div class="pf-notes pf-notes-box">
-                    <p><strong>VENTA EN ZONA PRIMARIA</strong></p>
+                    <p>* Aeronave contizada RTF (Ready to Fly) Aerródromo Mario Cardama, Aerotec, Rivadavia, Mendoza. Flete, ensamble local, y matriculación incluidas. Eventuales trabajos extra, no incluidos. (CIF Buenos Aires, a los fines aduaneros).</p>
+                    <p>* Entrega: 120-150  (ESTA INFORMACION QUE SE PUEDDA EDITAR) días desde la recepción del depósito inicial, si no hay demoras en los pagos parciales ni causas de fuerza mayor.</p>
+                    <p>(**) Precios de Venta en Zona Primaria Aduanera - IMPORTACIÓN A CARGO DEL CLIENTE</p>
+                    <p>- Importación a nombre y cargo de Aerotec hasta Zona Primaria de Aduana de Buenos Aires. Nacionalización legal a cargo del cliente final (impuestos y agregados adicionales al nacionalizar el bien en el pais: IVA Adicional, IIBB, Ganancias y/o cualquier otro impuesto de corresponder.) Nacionalización operativa, trámites y costos aduaneros, a cargo de Aerotec.</p>
+                    <p>- Servicios Incluidos: Todos, desde Fábrica hasta su entrega final en Aerotec. Importación, armado y matriculación nacional, puesta en vuelo, gestión ante todos los Organismos Oficiales (Aduana, ANAC, etc.).  </p>
+                    <p>- Impuestos de Importación: Especificados en la presente proforma a fin informativo. Pagaderos directamente por el cliente, al tipo de cambio vigente al momento de nacionalización, vía VEP a ARCA.</p>
+                    <p>* Iva alícuota general 10,5% sobre valor de factura del avion, 21% sobre los equipamientos adicionales. Exceptuando aquellos casos con certificado de exención especifico.</p>
                 </div>
             </t>
 
