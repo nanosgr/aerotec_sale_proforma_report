@@ -34,7 +34,7 @@
             .pf-td { padding: 3px 5px; vertical-align: top; border-bottom: 1px solid #eaecef; font-size: 7.5pt; }
             .pf-td-r { text-align: right; white-space: nowrap; }
             .pf-td-c { text-align: center; }
-            .pf-td-desc { white-space: pre-line; }
+            
             .pf-subtot { background-color: #eef1f7; font-weight: bold; }
             .pf-subtot td { padding: 3px 5px; font-size: 8pt; border-bottom: 1px solid #b8c0cc; }
             .pf-ivarow td { padding: 2px 5px; font-size: 7.5pt; border-bottom: 1px solid #e0e3e8; }
@@ -184,6 +184,17 @@
                     </td>
                 </tr>
             </table>
+            <!-- ═══════════════════════════════════════════════════════
+                 LUGAR DE ENTREGA
+            ═══════════════════════════════════════════════════════ -->
+            <table class="pf-cli" style="margin-bottom: 6px;">
+                <tr>
+                    <td class="pf-lbl" style="width:80px;">LUGAR DE ENTREGA:</td>
+                    <td colspan="3" style="font-weight:bold;">
+                        Aeródromo Mario Cardama (Aerotec) - Comandante Torres 100, Rivadavia, Mendoza, Argentina
+                    </td>
+                </tr>
+            </table>
 
             <!-- ═══════════════════════════════════════════════════════
                  TABLA AVIÓN (primera sección)
@@ -196,8 +207,9 @@
                         <tr>
                             <th class="pf-th pf-th-l" style="width:8%;">CÓDIGO</th>
                             <th class="pf-th pf-th-c" style="width:7%;">CANTIDAD</th>
-                            <th class="pf-th pf-th-l" style="width:55%;">DESCRIPCIÓN AVIÓN</th>
+                            <th class="pf-th pf-th-l" style="width:48%;">DESCRIPCIÓN AVIÓN</th>
                             <th class="pf-th pf-th-r" style="width:15%;">PRECIO UNITARIO</th>
+                            <th class="pf-th pf-th-r" style="width:7%;">DESC.</th>
                             <th class="pf-th pf-th-r" style="width:15%;">SUBTOTAL</th>
                         </tr>
                     </thead>
@@ -227,7 +239,7 @@
                                         <span t-field="line.product_uom_qty"
                                               t-options='{"widget": "float", "decimal_precision": "Product Unit of Measure"}'/>
                                     </td>
-                                    <td class="pf-td pf-td-desc">
+                                    <td class="pf-td">
                                         <span t-field="line.name"/>
                                     </td>
                                     <td class="pf-td pf-td-r">
@@ -237,6 +249,10 @@
                                         <t t-else="">
                                             <span t-field="doc.currency_id.symbol"/> -
                                         </t>
+                                    </td>
+                                    <td class="pf-td pf-td-r">
+                                        <t t-if="line.discount"><span t-out="'{:.1f}%'.format(line.discount)"/></t>
+                                        <t t-else="">-</t>
                                     </td>
                                     <td class="pf-td pf-td-r">
                                         <t t-if="line.price_subtotal">
@@ -259,7 +275,7 @@
                     </tbody>
                     <tfoot>
                         <tr class="pf-subtot">
-                            <td colspan="4" style="text-align:right;">
+                            <td colspan="5" style="text-align:right;">
                                 SUBTOTAL AVIÓN - Configuración de Importación - (CIF Buenos Aires):
                             </td>
                             <td style="text-align:right; white-space:nowrap;">
@@ -283,7 +299,7 @@
                             </tr>
                         </t>
                         <tr class="pf-totrow">
-                            <td colspan="4" style="text-align:right;">TOTAL AVIÓN</td>
+                            <td colspan="5" style="text-align:right;">TOTAL AVIÓN</td>
                             <td style="text-align:right; white-space:nowrap;">
                                 <span t-out="format_amount(avion['total'], doc.currency_id)"/>
                             </td>
@@ -302,8 +318,9 @@
                         <tr>
                             <th class="pf-th pf-th-l" style="width:8%;">CÓDIGO</th>
                             <th class="pf-th pf-th-c" style="width:7%;">CANTIDAD</th>
-                            <th class="pf-th pf-th-l" style="width:55%;">DESCRIPCIÓN OPCIONALES</th>
+                            <th class="pf-th pf-th-l" style="width:48%;">DESCRIPCIÓN OPCIONALES</th>
                             <th class="pf-th pf-th-r" style="width:15%;">PRECIO UNITARIO</th>
+                            <th class="pf-th pf-th-r" style="width:7%;">DESC.</th>
                             <th class="pf-th pf-th-r" style="width:15%;">SUBTOTAL</th>
                         </tr>
                     </thead>
@@ -334,7 +351,7 @@
                                             <span t-field="line.product_uom_qty"
                                                   t-options='{"widget": "float", "decimal_precision": "Product Unit of Measure"}'/>
                                         </td>
-                                        <td class="pf-td pf-td-desc">
+                                        <td class="pf-td">
                                             <span t-field="line.name"/>
                                         </td>
                                         <td class="pf-td pf-td-r">
@@ -344,6 +361,10 @@
                                             <t t-else="">
                                                 <span t-field="doc.currency_id.symbol"/> -
                                             </t>
+                                        </td>
+                                        <td class="pf-td pf-td-r">
+                                            <t t-if="line.discount"><span t-out="'{:.1f}%'.format(line.discount)"/></t>
+                                            <t t-else="">-</t>
                                         </td>
                                         <td class="pf-td pf-td-r">
                                             <t t-if="line.price_subtotal">
@@ -367,7 +388,7 @@
                     </tbody>
                     <tfoot>
                         <tr class="pf-subtot">
-                            <td colspan="4" style="text-align:right;">SUBTOTAL OPCIONALES NACIONALES</td>
+                            <td colspan="5" style="text-align:right;">SUBTOTAL OPCIONALES NACIONALES</td>
                             <td style="text-align:right; white-space:nowrap;">
                                 <span t-out="format_amount(opcionales['subtotal'], doc.currency_id)"/>
                             </td>
@@ -386,7 +407,7 @@
                             </tr>
                         </t>
                         <tr class="pf-totrow">
-                            <td colspan="4" style="text-align:right;">TOTAL OPCIONALES</td>
+                            <td colspan="5" style="text-align:right;">TOTAL OPCIONALES</td>
                             <td style="text-align:right; white-space:nowrap;">
                                 <span t-out="format_amount(opcionales['total'], doc.currency_id)"/>
                             </td>
@@ -522,7 +543,9 @@
                                 </t>
                             </td>
                             <td class="pf-pay-td">
-                                <span t-out="doc.payment_term_id.name or ''"/>
+                                <t t-if="pl_index == 0">Depósito inicial</t>
+                                <t t-elif="pl_index == len(plines) - 1">Contra entrega / Saldo</t>
+                                <t t-else="">Pago parcial</t>
                             </td>
                             <td class="pf-pay-td" style="text-align:center;">
                                 <span t-out="'{:.0f}%'.format(pl['percent'])"/>
