@@ -16,6 +16,7 @@ class SaleOrder(models.Model):
         required=True,
     )
     proforma_name = fields.Char(string="N° Proforma", copy=False, readonly=True)
+    delivery_period_days = fields.Integer(string="Período de Entrega (días)")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -42,7 +43,7 @@ class SaleOrder(models.Model):
         Retorna una lista de dicts con: name, lines, subtotal, taxes (lista), total.
         """
         sections = []
-        current = {"name": None, "lines": [], "subtotal": 0.0, "taxes": {}}
+        current = {"name": None, "lines": [], "subtotal": 0.0, "gross_subtotal": 0.0, "taxes": {}}
 
         for line in self._get_order_lines_to_report():
             if line.display_type == "line_section":
@@ -52,12 +53,14 @@ class SaleOrder(models.Model):
                     "name": line.name,
                     "lines": [],
                     "subtotal": 0.0,
+                    "gross_subtotal": 0.0,
                     "taxes": {},
                 }
             else:
                 current["lines"].append(line)
                 if not line.display_type:
                     current["subtotal"] += line.price_subtotal
+                    current["gross_subtotal"] += line.price_unit * line.product_uom_qty
                     for tax in line.tax_id:
                         k = tax.id
                         if k not in current["taxes"]:
@@ -84,6 +87,7 @@ class SaleOrder(models.Model):
             return None
         opcionales = all_sections[1:]
         agg_subtotal = sum(s["subtotal"] for s in opcionales)
+        agg_gross_subtotal = sum(s["gross_subtotal"] for s in opcionales)
         agg_taxes = {}
         for s in opcionales:
             for tax in s["taxes"]:
@@ -102,6 +106,8 @@ class SaleOrder(models.Model):
         return {
             "sections": opcionales,
             "subtotal": agg_subtotal,
+            "gross_subtotal": agg_gross_subtotal,
+            "discount_total": agg_gross_subtotal - agg_subtotal,
             "taxes": agg_tax_list,
             "total": agg_total,
         }
@@ -109,10 +115,13 @@ class SaleOrder(models.Model):
     def _finalize_proforma_section(self, section):
         tax_list = sorted(section["taxes"].values(), key=lambda x: x["rate"])
         total = section["subtotal"] + sum(t["amount"] for t in tax_list)
+        gross_subtotal = section["gross_subtotal"]
         return {
             "name": section["name"],
             "lines": section["lines"],
             "subtotal": section["subtotal"],
+            "gross_subtotal": gross_subtotal,
+            "discount_total": gross_subtotal - section["subtotal"],
             "taxes": tax_list,
             "total": total,
         }

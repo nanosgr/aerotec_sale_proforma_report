@@ -194,6 +194,14 @@
                         Aeródromo Mario Cardama (Aerotec) - Comandante Torres 100, Rivadavia, Mendoza, Argentina
                     </td>
                 </tr>
+                <tr>
+                    <td class="pf-lbl">PERÍODO DE ENTREGA:</td>
+                    <td colspan="3">
+                        <t t-if="doc.delivery_period_days">
+                            <span t-out="doc.delivery_period_days"/> días
+                        </t>
+                    </td>
+                </tr>
             </table>
 
             <!-- ═══════════════════════════════════════════════════════
@@ -207,9 +215,8 @@
                         <tr>
                             <th class="pf-th pf-th-l" style="width:8%;">CÓDIGO</th>
                             <th class="pf-th pf-th-c" style="width:7%;">CANTIDAD</th>
-                            <th class="pf-th pf-th-l" style="width:48%;">DESCRIPCIÓN AVIÓN</th>
+                            <th class="pf-th pf-th-l" style="width:55%;">DESCRIPCIÓN AVIÓN</th>
                             <th class="pf-th pf-th-r" style="width:15%;">PRECIO UNITARIO</th>
-                            <th class="pf-th pf-th-r" style="width:7%;">DESC.</th>
                             <th class="pf-th pf-th-r" style="width:15%;">SUBTOTAL</th>
                         </tr>
                     </thead>
@@ -251,12 +258,8 @@
                                         </t>
                                     </td>
                                     <td class="pf-td pf-td-r">
-                                        <t t-if="line.discount"><span t-out="'{:.1f}%'.format(line.discount)"/></t>
-                                        <t t-else="">-</t>
-                                    </td>
-                                    <td class="pf-td pf-td-r">
-                                        <t t-if="line.price_subtotal">
-                                            <span t-out="format_amount(line.price_subtotal, doc.currency_id)"/>
+                                        <t t-if="line.price_unit">
+                                            <span t-out="format_amount(line.price_unit * line.product_uom_qty, doc.currency_id)"/>
                                         </t>
                                         <t t-else="">
                                             <span t-field="doc.currency_id.symbol"/> -
@@ -275,15 +278,23 @@
                     </tbody>
                     <tfoot>
                         <tr class="pf-subtot">
-                            <td colspan="5" style="text-align:right;">
+                            <td colspan="4" style="text-align:right;">
                                 SUBTOTAL AVIÓN - Configuración de Importación - (CIF Buenos Aires):
                             </td>
                             <td style="text-align:right; white-space:nowrap;">
-                                <span t-out="format_amount(avion['subtotal'], doc.currency_id)"/>
+                                <span t-out="format_amount(avion['gross_subtotal'], doc.currency_id)"/>
                             </td>
                         </tr>
+                        <t t-if="avion['discount_total'] > 0">
+                            <tr class="pf-subtot">
+                                <td colspan="4" style="text-align:right;">DESCUENTOS:</td>
+                                <td style="text-align:right; white-space:nowrap;">
+                                    (<span t-out="format_amount(avion['discount_total'], doc.currency_id)"/>)
+                                </td>
+                            </tr>
+                        </t>
                         <t t-foreach="avion['taxes']" t-as="tax">
-                            <tr class="pf-ivarow">
+                            <tr class="pf-subtot">
                                 <td colspan="3" style="text-align:right;">
                                     IVA : <span t-out="tax['rate']"/>%
                                     <span style="font-size:7pt; color:#555;">
@@ -299,7 +310,7 @@
                             </tr>
                         </t>
                         <tr class="pf-totrow">
-                            <td colspan="5" style="text-align:right;">TOTAL AVIÓN</td>
+                            <td colspan="4" style="text-align:right;">TOTAL AVIÓN</td>
                             <td style="text-align:right; white-space:nowrap;">
                                 <span t-out="format_amount(avion['total'], doc.currency_id)"/>
                             </td>
@@ -318,9 +329,8 @@
                         <tr>
                             <th class="pf-th pf-th-l" style="width:8%;">CÓDIGO</th>
                             <th class="pf-th pf-th-c" style="width:7%;">CANTIDAD</th>
-                            <th class="pf-th pf-th-l" style="width:48%;">DESCRIPCIÓN OPCIONALES</th>
+                            <th class="pf-th pf-th-l" style="width:55%;">DESCRIPCIÓN OPCIONALES</th>
                             <th class="pf-th pf-th-r" style="width:15%;">PRECIO UNITARIO</th>
-                            <th class="pf-th pf-th-r" style="width:7%;">DESC.</th>
                             <th class="pf-th pf-th-r" style="width:15%;">SUBTOTAL</th>
                         </tr>
                     </thead>
@@ -363,12 +373,8 @@
                                             </t>
                                         </td>
                                         <td class="pf-td pf-td-r">
-                                            <t t-if="line.discount"><span t-out="'{:.1f}%'.format(line.discount)"/></t>
-                                            <t t-else="">-</t>
-                                        </td>
-                                        <td class="pf-td pf-td-r">
-                                            <t t-if="line.price_subtotal">
-                                                <span t-out="format_amount(line.price_subtotal, doc.currency_id)"/>
+                                            <t t-if="line.price_unit">
+                                                <span t-out="format_amount(line.price_unit * line.product_uom_qty, doc.currency_id)"/>
                                             </t>
                                             <t t-else="">
                                                 <span t-field="doc.currency_id.symbol"/> -
@@ -388,13 +394,21 @@
                     </tbody>
                     <tfoot>
                         <tr class="pf-subtot">
-                            <td colspan="5" style="text-align:right;">SUBTOTAL OPCIONALES NACIONALES</td>
+                            <td colspan="4" style="text-align:right;">SUBTOTAL OPCIONALES NACIONALES</td>
                             <td style="text-align:right; white-space:nowrap;">
-                                <span t-out="format_amount(opcionales['subtotal'], doc.currency_id)"/>
+                                <span t-out="format_amount(opcionales['gross_subtotal'], doc.currency_id)"/>
                             </td>
                         </tr>
+                        <t t-if="opcionales['discount_total'] > 0">
+                            <tr class="pf-subtot">
+                                <td colspan="4" style="text-align:right;">DESCUENTOS:</td>
+                                <td style="text-align:right; white-space:nowrap;">
+                                    (<span t-out="format_amount(opcionales['discount_total'], doc.currency_id)"/>)
+                                </td>
+                            </tr>
+                        </t>
                         <t t-foreach="opcionales['taxes']" t-as="tax">
-                            <tr class="pf-ivarow">
+                            <tr class="pf-subtot">
                                 <td colspan="3" style="text-align:right;">
                                     IVA (Alícuota General) <span t-out="tax['rate']"/>%
                                 </td>
@@ -407,7 +421,7 @@
                             </tr>
                         </t>
                         <tr class="pf-totrow">
-                            <td colspan="5" style="text-align:right;">TOTAL OPCIONALES</td>
+                            <td colspan="4" style="text-align:right;">TOTAL OPCIONALES</td>
                             <td style="text-align:right; white-space:nowrap;">
                                 <span t-out="format_amount(opcionales['total'], doc.currency_id)"/>
                             </td>
@@ -471,7 +485,7 @@
             <t t-if="doc.proforma_type == 'national'">
                 <div class="pf-notes pf-notes-box">
                     <p>* Condicion de Venta: EXW (RTF- Ready to Fly) Aeródromo Aerotec Rivadavia, Mendoza. Flete, ensamble local, y matriculación incluidas. Eventuales trabajos extra, no incluidos.</p>
-                    <p>* Entrega: 120-150  (ESTA INFORMACION QUE SE PUEDDA EDITAR) días desde la recepción del depósito inicial, si no hay demoras en los pagos parciales ni causas de fuerza mayor.</p>
+                    <p>* Entrega: <t t-if="doc.delivery_period_days"><span t-out="doc.delivery_period_days"/> días</t><t t-else="">— días</t> desde la recepción del depósito inicial, si no hay demoras en los pagos parciales ni causas de fuerza mayor.</p>
                     <p>(**) Precios de Venta Nacional -Importación a nombre y cargo de Aerotec. Venta Nacional.</p>
                     <p>- Servicios Incluidos: Todo hasta su entrega. Importación, armado y fabricación nacional; matriculación, puesta en vuelo, gestión de transferencia de dominio.</p>
                     <p>- Costos NO Incluidos: Arancel de transferencia de dominio, 1% sobre el valor neto de factura. Impuestos de Sellos, 1,5% (ATM Mendoza), ambos sobre el valor neto de la factura.</p>
@@ -481,7 +495,7 @@
             <t t-elif="doc.proforma_type == 'customs_zone'">
                 <div class="pf-notes pf-notes-box">
                     <p>* Aeronave contizada RTF (Ready to Fly) Aerródromo Mario Cardama, Aerotec, Rivadavia, Mendoza. Flete, ensamble local, y matriculación incluidas. Eventuales trabajos extra, no incluidos. (CIF Buenos Aires, a los fines aduaneros).</p>
-                    <p>* Entrega: 120-150  (ESTA INFORMACION QUE SE PUEDDA EDITAR) días desde la recepción del depósito inicial, si no hay demoras en los pagos parciales ni causas de fuerza mayor.</p>
+                    <p>* Entrega: <t t-if="doc.delivery_period_days"><span t-out="doc.delivery_period_days"/> días</t><t t-else="">— días</t> desde la recepción del depósito inicial, si no hay demoras en los pagos parciales ni causas de fuerza mayor.</p>
                     <p>(**) Precios de Venta en Zona Primaria Aduanera - IMPORTACIÓN A CARGO DEL CLIENTE</p>
                     <p>- Importación a nombre y cargo de Aerotec hasta Zona Primaria de Aduana de Buenos Aires. Nacionalización legal a cargo del cliente final (impuestos y agregados adicionales al nacionalizar el bien en el pais: IVA Adicional, IIBB, Ganancias y/o cualquier otro impuesto de corresponder.) Nacionalización operativa, trámites y costos aduaneros, a cargo de Aerotec.</p>
                     <p>- Servicios Incluidos: Todos, desde Fábrica hasta su entrega final en Aerotec. Importación, armado y matriculación nacional, puesta en vuelo, gestión ante todos los Organismos Oficiales (Aduana, ANAC, etc.).  </p>
