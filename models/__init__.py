@@ -1,1 +1,1 @@
-from . import sale_order, report_proforma, product_template
+from . import sale_order, sale_payment_line, report_proforma, product_template

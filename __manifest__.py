@@ -5,9 +5,10 @@
     "summary": "Factura pro-forma personalizada para ventas de aeronaves",
     "author": "Sebastian Rios",
     "license": "LGPL-3",
-    "depends": ["sale", "product"],
+    "depends": ["sale", "product", "account"],
     "data": [
         "data/data.xml",
+        "security/ir.model.access.csv",
         "views/sale_order_views.xml",
         "views/product_template_views.xml",
         "report/report_proforma.xml",

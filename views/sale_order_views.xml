@@ -13,6 +13,29 @@
                        readonly="1"/>
                 <field name="delivery_period_days"/>
             </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Plan de Pagos" name="payment_plan">
+                    <group>
+                        <field name="custom_payment_pct_total"
+                               readonly="1"
+                               string="Total ingresado"
+                               decoration-danger="custom_payment_pct_total != 100 and custom_payment_pct_total != 0"
+                               decoration-success="custom_payment_pct_total == 100"
+                               widget="float"/>
+                    </group>
+                    <field name="custom_payment_line_ids"
+                           readonly="state not in ('draft', 'sent')"
+                           nolabel="1">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="label"/>
+                            <field name="percent" string="%"/>
+                            <field name="nb_days" string="Días desde factura"/>
+                            <field name="amount" readonly="1" string="Importe estimado"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
 </odoo>

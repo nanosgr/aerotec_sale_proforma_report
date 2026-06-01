@@ -564,9 +564,14 @@
                                 </t>
                             </td>
                             <td class="pf-pay-td">
-                                <t t-if="pl_index == 0">Depósito inicial</t>
-                                <t t-elif="pl_index == len(plines) - 1">Contra entrega / Saldo</t>
-                                <t t-else="">Pago parcial</t>
+                                <t t-if="pl.get('label')">
+                                    <span t-out="pl['label']"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-if="pl_index == 0">Depósito inicial</t>
+                                    <t t-elif="pl_index == len(plines) - 1">Contra entrega / Saldo</t>
+                                    <t t-else="">Pago parcial</t>
+                                </t>
                             </td>
                             <td class="pf-pay-td" style="text-align:center;">
                                 <span t-out="'{:.0f}%'.format(pl['percent'])"/>

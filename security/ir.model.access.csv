@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aerotec_sale_payment_line_user,aerotec.sale.payment.line user,model_aerotec_sale_payment_line,sales_team.group_sale_salesman,1,1,1,1
+access_aerotec_sale_payment_line_manager,aerotec.sale.payment.line manager,model_aerotec_sale_payment_line,sales_team.group_sale_salesman_all_leads,1,1,1,1
